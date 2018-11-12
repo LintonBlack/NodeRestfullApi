@@ -2,8 +2,21 @@ const http = require('http');
 const https = require('https');
 const url = require('url');
 const StringDecoder = require('string_decoder').StringDecoder;
-const config = require('./config');
+const config = require('./lib/config');
 const fs = require('fs');
+const handlers = require('./lib/handlers');
+const helpers = require('./lib/helpers');
+//va const _data = require('./lib/data');
+
+
+// TESTING
+// @TODO delete the test
+
+//_data.create('test', 'newFile', { 'foo': 'bar'}, function(err) { console.log('this was the error', err)});
+//_data.read('test', 'newFile', function(err, data) { console.log('this was the error', err, ' and this was the data', data)});
+//_data.update('test', 'newFile', { 'Michel': 'Tell'}, function(err) { console.log('this was the error', err)});
+//_data.delete('test', 'newFile', function(err) { console.log('this was the error', err)});
+
 
 // Instantiate the HTTP server
 const httpServer = http.createServer(function(req,res) {
@@ -60,7 +73,7 @@ let unifiedServer = function(req,res) {
 
         buffer += decoder.end();
 
-        let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handler.notfound;
+        let chosenHandler = typeof(router[trimmedPath]) !== 'undefined' ? router[trimmedPath] : handlers.notfound;
 
         // construct data obj
         let data = {
@@ -68,8 +81,8 @@ let unifiedServer = function(req,res) {
             'queryStringObject' : queryStringObject,
             'method' : method,
             'headers' : headers,
-            'payload' : buffer
-        }
+            'payload' : helpers.parseJsonToObject(buffer)
+        };
 
         chosenHandler(data, function(statusCode, payload) {
             statusCode = typeof(statusCode) === 'number' ? statusCode : 200;
@@ -91,22 +104,8 @@ let unifiedServer = function(req,res) {
     })
 }
 
-
-let handler = {};
-
-handler.ping = function(data, callback) {
-    callback(200)
-}
-
-handler.hello = function(data, callback) {
-    callback(200, { message : 'Good news everyone, I have created a hello world restfull API'})
-}
-
-handler.notfound = function(data, callback) {
-    callback(404)
-}
-
+ 
 const router = {
-    'ping' : handler.ping,
-    'hello' : handler.hello
+    'ping' : handlers.ping,
+    'users' : handlers.users
 }
