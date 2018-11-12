@@ -107,5 +107,6 @@ handler.notfound = function(data, callback) {
 }
 
 const router = {
-    'ping' : handler.ping
+    'ping' : handler.ping,
+    'hello' : handler.hello
 }
