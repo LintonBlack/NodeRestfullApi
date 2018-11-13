@@ -8,6 +8,10 @@ const handlers = require('./lib/handlers');
 const helpers = require('./lib/helpers');
 //va const _data = require('./lib/data');
 
+//
+// helpers.sendTwilioSms('5356352635', 'Hello!', function(err) {
+//     console.log('this was the error', err)
+// })
 
 // TESTING
 // @TODO delete the test
@@ -107,5 +111,6 @@ let unifiedServer = function(req,res) {
  
 const router = {
     'ping' : handlers.ping,
-    'users' : handlers.users
+    'users' : handlers.users,
+    'tokens' : handlers.tokens
 }
